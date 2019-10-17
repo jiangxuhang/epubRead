@@ -41,7 +41,7 @@ import { getReadTimeByMinute } from '../../utils/book'
       getSectionName() {
         if(this.section) {
           const sectionInfo = this.currentBook.section(this.section)
-          if(sectionInfo && sectionInfo.href) {
+          if(sectionInfo && sectionInfo.href && this.currentBook && this.currentBook.navigation) {
             return this.currentBook.navigation.get(sectionInfo.href).label
           }
         }
@@ -85,9 +85,6 @@ import { getReadTimeByMinute } from '../../utils/book'
         if (sectionInfo && sectionInfo.href) {
           this.display(sectionInfo.href)
         }
-      },
-      getReadTimeText() {
-        return this.$t('book.haveRead').replace('$1', getReadTimeByMinute(this.fileName))
       }
     },
     updated() {

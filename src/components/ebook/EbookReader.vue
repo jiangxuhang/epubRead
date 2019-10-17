@@ -8,6 +8,7 @@ import Epub from 'epubjs'
 import {ebookMixin} from '../../utils/mixin'
 import { getFontFamily, saveFontFamily, getFontSize, saveFontSize,getTheme,saveTheme } from '../../utils/localStorage'
 import { getLocation } from '../../../../vue-imooc-ebook-chapter/src/utils/localStorage';
+import { flatten } from '../../utils/book';
 global.epub = Epub
 export default {
     mixins:[ebookMixin],
@@ -34,11 +35,6 @@ export default {
                 this.setFontFamilyVisible(false)
             }
             this.setMenuVisible(!this.menuVisible)
-        },
-        hideTitleAndMenu() {
-            this.setMenuVisible(false)
-            this.setSettingVisible(-1)
-            this.setFontFamilyVisible(false)
         },
         initFontSize() {
             let fontSize = getFontSize(this.fileName)
@@ -109,12 +105,37 @@ export default {
            })
 
         },
+        parseBook() {
+            this.book.loaded.cover.then(cover => {
+                this.book.archive.createUrl(cover).then(url => {
+                    this.setCover(url)
+                })
+            })
+            this.book.loaded.metadata.then(metadata => {
+                this.setMetadata(metadata)
+            })
+            this.book.loaded.navigation.then(nav => {
+                const navItem = flatten(nav.toc)
+                function find(item, level = 0) {
+                    if(!item.parent) {
+                        return level
+                    } else {
+                        find(navItem.filter(parentItem => parentItem.id === item.parent)[0], ++ level)
+                    }
+                }
+                navItem.forEach(item => {
+                    item.level = find(item)
+                })
+                this.setNavigation(navItem)
+            })
+        },
         initEpub() {
             const url = 'http://39.96.186.64:8081/epub/' + this.fileName + '.epub'
             this.book = new Epub(url)
             this.setCurrentBook(this.book)
             this.initRendition()
             this.initGesture()
+            this.parseBook()
             this.book.ready.then(() => {
                 return this.book.locations.generate(750 * (window.innerWidth / 375) * (getFontSize(this.fileName) / 16))
             }).then((locations) => {
