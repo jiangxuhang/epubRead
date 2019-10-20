@@ -20,7 +20,7 @@
               </div>
             </div>
           </div>
-          <div class="content-empty" v-else>
+          <div class="content-empty" >
             <ebook-loading></ebook-loading>
           </div>
         </div>
