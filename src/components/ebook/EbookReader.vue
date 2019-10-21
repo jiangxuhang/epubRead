@@ -4,7 +4,10 @@
         <div class="ebook-reader-mask" 
         @click="onMaskClick"
         @touchmove="move"
-        @touchend="moveEnd"></div>
+        @touchend="moveEnd"
+        @mousedown.left="onMouseEnter"
+        @mousemove.left="onMouseMove"
+        @mouseup.left="onMouseEnd"></div>
     </div>
 </template>
 <script>
@@ -17,6 +20,42 @@ global.epub = Epub
 export default {
     mixins:[ebookMixin],
     methods: {
+        onMouseEnter(e) {
+            this.mouseState = 1//鼠标进入
+            this.mouseStartTime = e.timeStamp
+            e.preventDefault()
+            e.stopPropagation()
+        },
+        onMouseMove(e) {
+            if(this.mouseState === 1) {
+                this.mouseState = 2//鼠标进入后移动
+            } else if(this.mouseState === 2) {
+                let offsetY = 0
+                if(this.firseOffsetY) {
+                    offsetY = e.clientY - this.firseOffsetY
+                    this.setOffsetY(offsetY)
+                } else {
+                    this.firseOffsetY = e.clientY
+                }
+            }
+            e.preventDefault()
+            e.stopPropagation()
+        },
+        onMouseEnd(e) {
+            if(this.mouseState === 2) {
+                this.setOffsetY(0)
+                this.firseOffsetY = null
+                this.mouseState = 3
+            } else {
+                this.mouseState = 4
+            }
+            const time = e.timeStamp - this.mouseStartTime
+            if(time < 100) {
+                this.mouseState = 4
+            }
+            e.preventDefault()
+            e.stopPropagation()
+        },
         move(e) {
             let offsetY = 0
             if(this.firseOffsetY) {
@@ -25,12 +64,15 @@ export default {
             } else {
                 this.firseOffsetY = e.changedTouches[0].clientY
             }
+            e.preventDefault()
+            e.stopPropagation()
         },
         moveEnd() {
             this.setOffsetY(0)
             this.firseOffsetY = null
         },
         onMaskClick(e) {
+            if(this.mouseState && (this.mouseState === 2 || this.mouseState === 3)) return
             const offsetX = e.offsetX;
             const width = window.innerWidth
             if(offsetX > 0 && offsetX < width * 0.3) {
@@ -96,9 +138,9 @@ export default {
         },
         initRendition() {
             this.rendition = this.book.renderTo('read', {
-               width: innerWidth,
-               height: innerHeight,
-               //method: 'default'
+               width: window.innerWidth,
+               height: window.innerHeight,
+               method: 'default'
            })
            const location = getLocation(this.fileName)
            this.display(location, () => {

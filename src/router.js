@@ -16,6 +16,10 @@ export default new Router({
         path: ':fileName',
         component: () => import('./components/ebook/EbookReader.vue')
       }]
+    },
+    {
+      path: '/store',
+      component: () => import('./views/store/index.vue')
     }
   ]
 })
