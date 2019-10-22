@@ -36,3 +36,14 @@ $ratio: 375 / 10;
     -webkit-line-clamp: $line;
     word-break: keep-all;
 }
+
+.icon {
+    color: #666;
+    font-size: px2rem(16)
+}
+
+.title {
+    color: #666;
+    font-size: px2rem(16);
+    font-weight: bold;
+}
