@@ -1,4 +1,6 @@
 $ratio: 375 / 10;
+$animationTime: .2s;
+$animationType: linear;
 
 @function px2rem($px) {
     @return $px / $ratio + rem;
@@ -35,6 +37,13 @@ $ratio: 375 / 10;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: $line;
     word-break: keep-all;
+}
+
+@mixin columnLeft {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
 }
 
 .icon {

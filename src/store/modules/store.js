@@ -1,7 +1,7 @@
 const store = {
   state: {
     hotSearchOffsetY: 0,
-    flapCardVisible: false,
+    flapCardVisible: true,
     isEditMode: false,
     shelfList: [],
     shelfSelected: [],
