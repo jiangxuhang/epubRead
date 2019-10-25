@@ -46,6 +46,15 @@ $animationType: linear;
     justify-content: center;
 }
 
+@mixin absCenter {
+    position: absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    margin: auto;
+}
+
 .icon {
     color: #666;
     font-size: px2rem(16)
