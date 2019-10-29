@@ -22,7 +22,8 @@
                             class="input" 
                             :placeholder="$t('home.hint')" 
                             v-model="searchText"
-                            @click="showHotSearch">
+                            @click="showHotSearch"
+                            @keyup.13.exact="search">
                 </div>
             </div>
         </div>
@@ -63,6 +64,14 @@ export default {
         }
     },
     methods: {
+        search() {
+            this.$router.push({
+                path: '/store/list',
+                query: {
+                    keyword: this.searchText
+                }
+            })
+        },
         hideTitle() {
             this.titleVisible = false
         },
