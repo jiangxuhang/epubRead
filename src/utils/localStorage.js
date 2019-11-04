@@ -23,7 +23,6 @@ export function saveBookShelf (shelf) {
 }
 
 export function getBookShelf () {
-  console.log(123)
   return getLocalStorage('shelf')
 }
 

@@ -16,6 +16,7 @@ import {ebookMixin} from '../../utils/mixin'
 import { getFontFamily, saveFontFamily, getFontSize, saveFontSize,getTheme,saveTheme } from '../../utils/localStorage'
 import { getLocation } from '../../../../vue-imooc-ebook-chapter/src/utils/localStorage';
 import { flatten } from '../../utils/book';
+import { getLocalForage } from '../../utils/localForage'
 global.epub = Epub
 export default {
     mixins:[ebookMixin],
@@ -199,8 +200,7 @@ export default {
                 this.setNavigation(navItem)
             })
         },
-        initEpub() {
-            const url = 'http://39.96.186.64:8081/epub/' + this.fileName + '.epub'
+        initEpub(url) {
             this.book = new Epub(url)
             this.setCurrentBook(this.book)
             this.initRendition()
@@ -215,8 +215,21 @@ export default {
         }
     },
     mounted() {
-        this.setFileName(this.$route.params.fileName.split('|').join('/')).then(() => {
-            this.initEpub()
+        const books = this.$route.params.fileName.split('|')
+        const fileName = books[1]
+        getLocalForage(fileName, (err, blob) => {
+            if(!err && blob) {
+                console.log('离线缓存')
+                this.setFileName(books.join('/')).then(() => {
+                    this.initEpub(blob)
+                })
+            } else {
+                console.log('在线获取')
+                this.setFileName(books.join('/')).then(() => {
+                    const url = 'http://39.96.186.64:8081/epub/' + this.fileName + '.epub'
+                    this.initEpub(url)
+                })
+            }
         })
     }
 }
