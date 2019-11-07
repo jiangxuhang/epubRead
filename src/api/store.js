@@ -1,6 +1,13 @@
 import axios from 'axios'
 import { setLocalForage } from '../utils/localForage'
 
+export function flatList () {
+    return axios({
+        method: 'get',
+        url: `${process.env.VUE_APP_BOOK_URL}/book/flat-list`
+    })
+}
+
 export function home () {
     return axios({
         method: 'get',
@@ -11,7 +18,7 @@ export function home () {
 export function detail (book) {
     return axios({
         method: 'get',
-        url: `${process.env.VUE_APP_BASE_URL}/book/detail`,
+        url: `${process.env.VUE_APP_BOOK_URL}/book/detail`,
         params: {
             fileName: book.fileName
         }

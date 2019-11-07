@@ -226,7 +226,7 @@ export default {
             } else {
                 console.log('在线获取')
                 this.setFileName(books.join('/')).then(() => {
-                    const url = 'http://39.96.186.64:8081/epub/' + this.fileName + '.epub'
+                    const url = process.env.VUE_APP_EPUB_URL + this.fileName + '.epub'
                     this.initEpub(url)
                 })
             }
